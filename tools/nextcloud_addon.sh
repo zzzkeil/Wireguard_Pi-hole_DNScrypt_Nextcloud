@@ -90,7 +90,7 @@ if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
 fi
-packagesdebian=("apache2" "libapache2-mod-php" "mariadb-server" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-common" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-7.q16-10-extra")
+packagesdebian=("apache2" "libapache2-mod-php" "mariadb-server" "php8.4-fpm" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-common" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-7.q16-10-extra")
 install_multiple_packages_with_gauge_debian() {
     total=${#packagesdebian[@]}
     step=0
@@ -231,6 +231,8 @@ subj="/C=DE/ST=Your/L=Nextcloud/O=Behind/OU=Wireguard/CN=$ipv4network"
 a2enmod ssl
 a2enmod rewrite
 a2enmod headers
+a2dismod php8.4 mpm_prefork
+a2enmod mpm_event proxy_fcgi http2
 systemctl stop apache2.service
 mv /etc/apache2/ports.conf /etc/apache2/ports.conf.bak
 
@@ -246,6 +248,12 @@ Listen 89
 </IfModule>
 " >> /etc/apache2/ports.conf
 
+echo "Protocols h2 h2c http/1.1
+#Protocols h2 h2c
+H2Direct on
+H2StreamMaxMemSize 5120000000
+" >> /etc/apache2/conf-enabled/http2.conf
+
 echo " 
 <VirtualHost *:$httpsport>
    ServerName $ipv4network
@@ -253,6 +261,7 @@ echo "
    SSLEngine on
    SSLCertificateFile /etc/ssl/certs/nc-selfsigned.crt
    SSLCertificateKeyFile /etc/ssl/private/nc-selfsigned.key
+   Protocols h2 http/1.1
 
 <Directory /var/www/nextcloud/>
   AllowOverride All
@@ -279,29 +288,29 @@ chown -R www-data:www-data $ncdatafolder
 
 ##php settings nextcloud
 cp /etc/php/8.4/apache2/php.ini /etc/php/8.4/apache2/php.ini.bak
-sed -i "s/memory_limit = 128M/memory_limit = 1G/" /etc/php/8.4/apache2/php.ini
-sed -i "s/output_buffering =.*/output_buffering = '0'/" /etc/php/8.4/apache2/php.ini
-sed -i "s/max_execution_time =.*/max_execution_time = 3600/" /etc/php/8.4/apache2/php.ini
-sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/8.4/apache2/php.ini
-sed -i "s/post_max_size =.*/post_max_size = 10G/" /etc/php/8.4/apache2/php.ini
-sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10G/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;cgi.fix_pathinfo.*/cgi.fix_pathinfo=0/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;session.cookie_secure.*/session.cookie_secure = True/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.enable=.*/opcache.enable=1/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.validate_timestamps=.*/opcache.validate_timestamps=0/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.enable_cli=.*/opcache.enable_cli=1/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=256/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=64/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=100000/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=60/" /etc/php/8.4/apache2/php.ini
-sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" /etc/php/8.4/apache2/php.ini
-sed -i "s/max_file_uploads =.*/max_file_uploads = 20/" /etc/php/8.4/apache2/php.ini
+cp /etc/php/8.4/fpm/php.ini /etc/php/8.4/fpm/php.ini.bak2
+sed -i "s/memory_limit = 128M/memory_limit = 1G/" /etc/php/8.4/fpm/php.ini
+sed -i "s/output_buffering =.*/output_buffering = '0'/" /etc/php/8.4/fpm/php.ini
+sed -i "s/max_execution_time =.*/max_execution_time = 3600/" /etc/php/8.4/fpm/php.ini
+sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/8.4/fpm/php.ini
+sed -i "s/post_max_size =.*/post_max_size = 10G/" /etc/php/8.4/fpm/php.ini
+sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10G/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;session.cookie_secure.*/session.cookie_secure = True/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.enable=.*/opcache.enable=1/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.validate_timestamps=.*/opcache.validate_timestamps=0/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.enable_cli=.*/opcache.enable_cli=1/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=256/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=64/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=100000/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=60/" /etc/php/8.4/fpm/php.ini
+sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" /etc/php/8.4/fpm/php.ini
+sed -i "s/max_file_uploads =.*/max_file_uploads = 20/" /etc/php/8.4/fpm/php.ini
+sed -i '$aopcache.jit=1255' /etc/php/8.4/fpm/php.ini
+sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/fpm/php.ini
+sed -i '$aapc.enable_cli=1' /etc/php/8.4/fpm/php.ini
+#sed -i "s/;cgi.fix_pathinfo.*/cgi.fix_pathinfo=0/" /etc/php/8.4/fpm/php.ini
 
-sed -i '$aopcache.jit=1255' /etc/php/8.4/apache2/php.ini
-sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/apache2/php.ini
-
-sed -i '$aapc.enable_cli=1' /etc/php/8.4/apache2/php.ini
 sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
 sed -i '$aopcache.jit=1255' /etc/php/8.4/mods-available/opcache.ini
 sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/mods-available/opcache.ini
