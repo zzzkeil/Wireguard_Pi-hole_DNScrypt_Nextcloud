@@ -55,115 +55,25 @@ ipv4network=$(sed -n 7p /root/Wireguard-DNScrypt-VPN-Server.README)
 ipv4network2="${ipv4network%.*}"
 ipv6network=$(sed -n 9p /root/Wireguard-DNScrypt-VPN-Server.README)
 
-update_upgrade_with_gauge() {
-    {
-        echo 10
-        echo "Starting apt-get update..."
-        apt-get update -y &> /dev/null
-        if [ $? -ne 0 ]; then
-            echo 100
-            echo "Error: apt-get update failed."
-            exit 1
-        fi
-
-        echo 50
-        echo "Starting apt-get upgrade..."
-        apt-get upgrade -y &> /dev/null
-        if [ $? -ne 0 ]; then
-            echo 100
-            echo "Error: apt-get upgrade failed."
-            exit 1
-        fi
-
-        echo 100
-        echo "Update and Upgrade completed successfully."
-    } | whiptail --title "System Update and Upgrade" --gauge "Please wait while updating and upgrading the system..." 15 80 0
-
-    if [ $? -eq 0 ]; then
-       echo ""
-    else
-        whiptail --title "Error" --msgbox "The update/upgrade process was interrupted." 15 80
-    fi
-}
 
 if [[ "$systemos" = 'debian' ]]; then
-update_upgrade_with_gauge
+apt update ; apt upgrade -y
 if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
 fi
-packagesdebian=("nginx" "mariadb-server" "libzip-dev" "libzip5" "php8.4-common" "php8.4-zip" "php8.4-fpm" "redis-server" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "php8.4-bz2" "php8.4-opcache" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-7.q16-10-extra")
-install_multiple_packages_with_gauge_debian() {
-    total=${#packagesdebian[@]}
-    step=0
-
-    {
-        for pkg in "${packagesdebian[@]}"; do
-            percent=$(( (step * 100) / total ))
-            echo $percent
-            echo "Installing package: $pkg..."
-            sudo apt-get install -y "$pkg" &> /dev/null
-            if [ $? -ne 0 ]; then
-                echo 100
-                echo "Error: Installation of package $pkg failed."
-                exit 1
-            fi
-            step=$((step + 1))
-        done
-        echo 100
-        echo "All packages installed successfully."
-    } | whiptail --title "Installing needed OS Packages" --gauge "Please wait while installing packages...\nnginx, many php packages, and ...." 15 90 0
-
-    if [ $? -eq 0 ]; then
-        echo ""
-    else
-        whiptail --title "Error" --msgbox "Installation process interrupted or failed." 15 80
-		exit 1
-    fi
-}
-
-install_multiple_packages_with_gauge_debian
+apt-get install nginx mariadb-server php8.4-fpm redis-server php8.4-xml php8.4-cli php8.4-cgi php8.4-mysql php8.4-mbstring php8.4-gd php8.4-curl php8.4-intl php8.4-gmp php8.4-bcmath php8.4-imagick php8.4-bz2 php8.4-opcache php8.4-redis php8.4-igbinary php8.4-apcu memcached php8.4-memcached unzip libzip-dev libzip5 php8.4-common php8.4-zip libmagickcore-7.q16-10-extra
 fi
 
 
 if [[ "$systemos" = 'ubuntu' ]]; then
 add-apt-repository ppa:ondrej/php -y
-update_upgrade_with_gauge
+apt update ; apt upgrade -y
 if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
 fi
-packagesubuntu=("nginx" "mariadb-server" "php-8.4-fpm" "redis-server" "php8.4-redis" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "libzip-dev" "libzip5" "php8.4-common" "php-common" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-common" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-6.q16-7-extra")
-install_multiple_packages_with_gauge_ubuntu() {
-    total=${#packagesubuntu[@]}
-    step=0
-
-    {
-        for pkg in "${packagesubuntu[@]}"; do
-            percent=$(( (step * 100) / total ))
-            echo $percent
-            echo "Installing package: $pkg..."
-            sudo apt-get install -y "$pkg" &> /dev/null
-            if [ $? -ne 0 ]; then
-                echo 100
-                echo "Error: Installation of package $pkg failed."
-                exit 1
-            fi
-            step=$((step + 1))
-        done
-        echo 100
-        echo "All packages installed successfully."
-    } | whiptail --title "Installing needed OS Packages" --gauge "Please wait while installing packages...\nnginx, many php packages, and ...." 15 90 0
-
-    if [ $? -eq 0 ]; then
-        echo ""
-    else
-        whiptail --title "Error" --msgbox "Installation process interrupted or failed." 15 80
-		exit 1
-    fi
-}
-
-install_multiple_packages_with_gauge_ubuntu
+apt-get install nginx mariadb-server php-8.4-fpm redis-server php8.4-redis php8.4-xml php8.4-cli php8.4-cgi php8.4-mysql php8.4-mbstring php8.4-gd php8.4-curl php8.4-intl php8.4-gmp php8.4-bcmath php8.4-imagick libzip-dev libzip5 php8.4-common php-common php8.4-zip php8.4-bz2 php8.4-opcache php8.4-common php8.4-redis php8.4-igbinary php8.4-apcu memcached php8.4-memcached unzip libmagickcore-6.q16-7-extra
 fi
 
 echo "
