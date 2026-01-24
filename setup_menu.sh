@@ -209,7 +209,7 @@ nextcloud_menu() {
     "2" "Back to Main Menu" 3>&1 1>&2 2>&3)
 
     case $CHOICE in
-        1) ./nextcloud-behind-wireguard.sh;;
+        1) ./nextcloud-addon.sh;;
         2) return ;;
     esac
 }
