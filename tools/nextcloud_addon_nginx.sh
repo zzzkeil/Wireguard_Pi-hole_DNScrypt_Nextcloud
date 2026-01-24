@@ -57,7 +57,7 @@ ipv6network=$(sed -n 9p /root/Wireguard-DNScrypt-VPN-Server.README)
 
 
 if [[ "$systemos" = 'debian' ]]; then
-apt update ; apt upgrade -y
+apt-get update ; apt-get upgrade -y
 if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
@@ -68,7 +68,7 @@ fi
 
 if [[ "$systemos" = 'ubuntu' ]]; then
 add-apt-repository ppa:ondrej/php -y
-apt update ; apt upgrade -y
+apt-get update ; apt-get upgrade -y
 if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
