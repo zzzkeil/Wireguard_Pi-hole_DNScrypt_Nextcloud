@@ -7,12 +7,7 @@
 #Version 2025.08.xx \n\n
 #Run script now ?"
 
-msghi="The script for install and configure nextcloud \n
-is broken. \n
-I need to fix this, soon. \n\n
-Infos @ https://github.com/zzzkeil/Wireguard-DNScrypt-VPN-Server \n
-Status 2026.01.24 \n\n
-EXIT now, cu ?"
+msghi="test"
 
 if whiptail --title "Hi, lets start" --yesno "$msghi" 25 90; then
 echo ""
@@ -20,11 +15,6 @@ else
 whiptail --title "Aborted" --msgbox "Ok, no install right now. Have a nice day." 15 80
 exit 1
 fi  
-
-
-exit
-
-
 
 ### root check
 if [[ "$EUID" -ne 0 ]]; then
@@ -175,6 +165,8 @@ install_multiple_packages_with_gauge_ubuntu() {
 
 install_multiple_packages_with_gauge_ubuntu
 fi
+
+exit
 
 echo "
 unixsocket /var/run/redis/redis.sock
