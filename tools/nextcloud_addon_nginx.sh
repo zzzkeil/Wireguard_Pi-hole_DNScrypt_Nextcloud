@@ -251,7 +251,7 @@ subj="/C=DE/ST=Your/L=Nextcloud/O=Behind/OU=Wireguard/CN=$ipv4network"
 
 
 
-echo "
+cat <<EOF >> /etc/nginx/sites-available/nc
 server {
     listen $httpsport;
     server_name $ipv4network;
@@ -311,7 +311,7 @@ server {
         add_header Cache-Control "public, max-age=15778463";
     }
 }
-" >> /etc/nginx/sites-available/nc
+EOF
 
 
 mkdir -p $ncdatafolder
