@@ -77,14 +77,14 @@ apt-get install nginx mariadb-server php-8.4-fpm redis-server php8.4-redis php8.
 fi
 
 echo "
-unixsocket /var/run/redis/redis.sock
+unixsocket /run/redis/redis-server.sock
 unixsocketperm 770
 " >> /etc/redis/redis.conf
 
 phpenmod zip
-usermod -aG redis www-data
-systemctl enable redis
-systemctl start redis
+sudo usermod -aG redis www-data
+systemctl enable redis-server
+systemctl start redis-server
 systemctl stop mariadb.service
 
 
@@ -310,11 +310,10 @@ cat <<EOF >> /var/www/nextcloud/config/myextra.config.php
 \$CONFIG = array (
    'memcache.local' => '\OC\Memcache\APCu',
    'memcache.locking' => '\\OC\\Memcache\\Redis',
-    'redis' => [
-     'host' => '/var/run/redis/redis.sock',
-     'port' => 0,
-     'timeout' => 0.0,
-],
+   'redis' => [
+    'host' => '/var/run/redis/redis-server.sock',
+    'port' => 0,
+    ],
    'default_phone_region' => '$dpr',
    'skeletondirectory' => '',
 );
