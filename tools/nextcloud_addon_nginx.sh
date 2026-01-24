@@ -181,6 +181,7 @@ unixsocket /var/run/redis/redis.sock
 unixsocketperm 770
 " >> /etc/redis/redis.conf
 
+phpenmod zip
 usermod -aG redis www-data
 systemctl enable redis
 systemctl start redis
@@ -338,7 +339,7 @@ sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" $PHP_I
 sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" $PHP_INI
 sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" $PHP_INI
 
-sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
+#sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
 sed -i '$aopcache.jit=1255' /etc/php/8.4/mods-available/opcache.ini
 sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/mods-available/opcache.ini
 
