@@ -166,8 +166,6 @@ install_multiple_packages_with_gauge_ubuntu() {
 install_multiple_packages_with_gauge_ubuntu
 fi
 
-exit
-
 echo "
 unixsocket /var/run/redis/redis.sock
 unixsocketperm 770
@@ -332,10 +330,6 @@ sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" $PHP_I
 sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" $PHP_INI
 sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" $PHP_INI
 
-#sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
-sed -i '$aopcache.jit=1255' /etc/php/8.4/mods-available/opcache.ini
-sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/mods-available/opcache.ini
-
 
 PHP_INI2="/etc/php/8.4/cli/php.ini"
 cp $PHP_INI2 $PHP_INI2.bak
@@ -350,11 +344,10 @@ sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" $PHP_I
 sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" $PHP_INI2
 sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" $PHP_INI2
 
+
 #sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
 sed -i '$aopcache.jit=1255' /etc/php/8.4/mods-available/opcache.ini
 sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/mods-available/opcache.ini
-
-
 
 
 sed -i '$a[mysql]' /etc/php/8.4/mods-available/mysqli.ini
@@ -369,6 +362,8 @@ sed -i '$amysql.trace_mode=Off' /etc/php/8.4/mods-available/mysqli.ini
 
 ln -s /etc/nginx/sites-available/nc /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
+
+
 systemctl restart nginx.service
 systemctl restart php8.4-fpm.service
 
@@ -433,7 +428,6 @@ sudo -u www-data php occ maintenance:repair --include-expensive
 sudo -u www-data php occ db:add-missing-indices
 sudo -u www-data php occ background:cron
 
-systemctl start apache2.service
 
 #whiptail --title "Info" --msgbox "E2EE end 2 end encryption is not working like usual without, functions too limited .......2023.08\nUsed serverside encryption for now, less secure but better than nothing .....\nA cloud VPS server is not really your host, its just someone else system,storage,and so on ......" 15 90
 
