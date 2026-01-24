@@ -92,7 +92,7 @@ if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
 fi
-packagesdebian=("nginx" "mariadb-server" "php8.4-fpm" "redis-server" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "libzip5" "php8.4-common" "php-common" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-7.q16-10-extra")
+packagesdebian=("nginx" "mariadb-server" "php8.4-fpm" "redis-server" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "libzip-dev" "libzip5" "php8.4-common" "php-common" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-7.q16-10-extra")
 install_multiple_packages_with_gauge_debian() {
     total=${#packagesdebian[@]}
     step=0
@@ -133,7 +133,7 @@ if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
 fi
-packagesubuntu=("nginx" "mariadb-server" "php-8.4-fpm" "redis-server" "php8.4-redis" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "libzip5" "php8.4-common" "php-common" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-common" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-6.q16-7-extra")
+packagesubuntu=("nginx" "mariadb-server" "php-8.4-fpm" "redis-server" "php8.4-redis" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "libzip-dev" "libzip5" "php8.4-common" "php-common" "php8.4-zip" "php8.4-bz2" "php8.4-opcache" "php8.4-common" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-6.q16-7-extra")
 install_multiple_packages_with_gauge_ubuntu() {
     total=${#packagesubuntu[@]}
     step=0
