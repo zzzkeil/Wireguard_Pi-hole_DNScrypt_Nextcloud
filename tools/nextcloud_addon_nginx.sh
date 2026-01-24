@@ -324,6 +324,7 @@ cp $PHP_INI $PHP_INI.bak
 sed -i "s/memory_limit = .*/memory_limit = 512M/" $PHP_INI
 sed -i "s/upload_max_filesize = .*/upload_max_filesize = 10G/" $PHP_INI
 sed -i "s/post_max_size = .*/post_max_size = 10G/" $PHP_INI
+sed -i "s/default_socket_timeout = .*/default_socket_timeout = 3600/" $PHP_INI
 sed -i "s/;opcache.enable=.*/opcache.enable=1/" $PHP_INI
 sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=16/" $PHP_INI
 sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=10000/" $PHP_INI
@@ -334,6 +335,26 @@ sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" $PHP_INI
 #sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
 sed -i '$aopcache.jit=1255' /etc/php/8.4/mods-available/opcache.ini
 sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/mods-available/opcache.ini
+
+
+PHP_INI2="/etc/php/8.4/cli/php.ini"
+cp $PHP_INI2 $PHP_INI2.bak
+sed -i "s/memory_limit = .*/memory_limit = 512M/" $PHP_INI2
+sed -i "s/upload_max_filesize = .*/upload_max_filesize = 10G/" $PHP_INI2
+sed -i "s/post_max_size = .*/post_max_size = 10G/" $PHP_INI2
+sed -i "s/default_socket_timeout = .*/default_socket_timeout = 3600/" $PHP_INI2
+sed -i "s/;opcache.enable=.*/opcache.enable=1/" $PHP_INI2
+sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=16/" $PHP_INI2
+sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=10000/" $PHP_INI2
+sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" $PHP_INI2
+sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" $PHP_INI2
+sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" $PHP_INI2
+
+#sed -i '$aapc.enable_cli=1' /etc/php/8.4/mods-available/apcu.ini
+sed -i '$aopcache.jit=1255' /etc/php/8.4/mods-available/opcache.ini
+sed -i '$aopcache.jit_buffer_size=256M' /etc/php/8.4/mods-available/opcache.ini
+
+
 
 
 sed -i '$a[mysql]' /etc/php/8.4/mods-available/mysqli.ini
