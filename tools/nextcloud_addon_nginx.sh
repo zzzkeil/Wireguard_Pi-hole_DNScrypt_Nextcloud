@@ -251,9 +251,9 @@ subj="/C=DE/ST=Your/L=Nextcloud/O=Behind/OU=Wireguard/CN=$ipv4network"
 
 
 
-cat <<EOF >> /etc/nginx/sites-available/nc
+cat <<EOF > /etc/nginx/sites-available/nc
 server {
-    listen $httpsport;
+    listen 8090;
     server_name $ipv4network;
     allow 10.0.0.0/8;
     allow 172.16.0.0/12;
@@ -264,7 +264,8 @@ server {
 }
 
 server {
-    listen $httpsport ssl http2;
+    listen $httpsport ssl;
+	http2 on;
     server_name $ipv4network;
     allow 10.0.0.0/8;
     allow 172.16.0.0/12;
