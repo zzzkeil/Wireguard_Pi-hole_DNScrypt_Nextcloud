@@ -92,7 +92,7 @@ if [ -f /var/run/reboot-required ]; then
 whiptail --title "reboot-required" --msgbox "Oh dammit :) - System upgrade required a reboot!\nreboot, and run this script again" 15 80
 exit 1
 fi
-packagesdebian=("nginx" "mariadb-server" "php8.4-fpm" "libzip-dev" "libzip5" "php8.4-common" "php8.4-zip" "redis-server" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "php8.4-bz2" "php8.4-opcache" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libmagickcore-7.q16-10-extra")
+packagesdebian=("nginx" "mariadb-server" "php8.4-fpm" "redis-server" "php8.4-xml" "php8.4-cli" "php8.4-cgi" "php8.4-mysql" "php8.4-mbstring" "php8.4-gd" "php8.4-curl" "php8.4-intl" "php8.4-gmp" "php8.4-bcmath" "php8.4-imagick" "php8.4-bz2" "php8.4-opcache" "php8.4-redis" "php8.4-igbinary" "php8.4-apcu" "memcached" "php8.4-memcached" "unzip" "libzip-dev" "libzip5" "php8.4-common" "php8.4-zip" "libmagickcore-7.q16-10-extra")
 install_multiple_packages_with_gauge_debian() {
     total=${#packagesdebian[@]}
     step=0
