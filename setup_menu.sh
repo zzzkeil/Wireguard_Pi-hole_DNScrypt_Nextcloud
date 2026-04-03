@@ -671,6 +671,7 @@ ln -s /etc/wireguard/ /root/wireguard_folder
 ln -s /etc/dnscrypt-proxy/ /root/dnscrypt-proxy_folder
 ln -s /var/log /root/system-log_folder
 systemctl restart firewalld
+if [[ -e /root/reminderfile.tmp ]]; then
 rm /root/reminderfile.tmp
 
 main_menu
